@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  customer-db:
+    image: postgres:15.2
+    container_name: customer_db
+    restart: always
+    volumes:
+      - database-data-customer:/var/lib/postgresql/data/
+      - ./customer/db/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+    environment:
+      - POSTGRES_DB=customer_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+
+volumes:
+  database-data-customer: {}

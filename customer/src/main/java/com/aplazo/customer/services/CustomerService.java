@@ -4,8 +4,6 @@ import com.aplazo.customer.entities.Customer;
 import com.aplazo.customer.repositories.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.math.BigInteger;
 import java.util.Optional;
 
 @Service
@@ -13,7 +11,7 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
-    public Optional<Customer> findById(BigInteger id) {
+    public Optional<Customer> findById(Long id) {
         return customerRepository.findById(id);
     }
 

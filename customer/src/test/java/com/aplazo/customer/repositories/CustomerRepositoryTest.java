@@ -1,27 +1,19 @@
 package com.aplazo.customer.repositories;
 
+import com.aplazo.customer.BaseContainer;
+import com.aplazo.customer.entities.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Testcontainers
-@TestPropertySource(properties = {"spring.jpa.hibernate.ddl-auto=create-drop"})
-public class CustomerRepositoryTest {
+public class CustomerRepositoryTest extends BaseContainer {
 
     @Autowired
     CustomerRepository customerRepository;
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
 
     @BeforeEach
     public void before() {
@@ -29,7 +21,34 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void test() {
-        assertEquals(true, true);
+    public void save_newCustomer_customerWithId() {
+        var customer = new Customer();
+        customer.setName("John Wick");
+
+        var result = customerRepository.save(customer);
+
+        assertNotNull(result.getId());
+        assertEquals(result.getName(), "John Wick");
+    }
+
+    @Test
+    public void findById_newCustomer_customer() {
+        var customer = new Customer();
+        customer.setName("John Wick");
+
+        var newCustomer = customerRepository.save(customer);
+
+        var result = customerRepository.findById(newCustomer.getId());
+
+        assertTrue(result.isPresent());
+        assertNotNull(result.get().getId());
+        assertEquals(result.get().getName(), "John Wick");
+    }
+
+    @Test
+    public void findById_nonExistentCustomer_emptyOptional() {
+        var result = customerRepository.findById(100L);
+
+        assertFalse(result.isPresent());
     }
 }

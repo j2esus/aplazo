@@ -14,6 +14,19 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
+  customer-app:
+    image: 'customer-app:latest'
+    build:
+      context: ./customer/
+    container_name: customer-app
+    depends_on:
+      - customer-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://customer-db:5432/customer_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    ports:
+      - "8080:8080"
 
 volumes:
   database-data-customer: {}

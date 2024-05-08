@@ -17,10 +17,8 @@ public class CustomerController {
     public ResponseEntity<Customer> findById(@PathVariable Long id) {
         var customer = customerService.findById(id);
 
-        if (customer.isPresent()) {
-            return new ResponseEntity<>(customer.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return customer.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @ResponseStatus(HttpStatus.CREATED)

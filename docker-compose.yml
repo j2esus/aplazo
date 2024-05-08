@@ -14,10 +14,13 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
+    networks:
+      - aplazo-net
   customer-app:
     image: 'customer-app:latest'
     build:
-      context: ./customer/
+      context: ./customer
+      dockerfile: Dockerfile
     container_name: customer-app
     depends_on:
       - customer-db
@@ -27,6 +30,42 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
     ports:
       - "8080:8080"
+    networks:
+      - aplazo-net
 
+  credit-line-db:
+    image: postgres:15.2
+    container_name: credit_line_db
+    restart: always
+    volumes:
+      - database-data-credit-line:/var/lib/postgresql/data/
+      - ./credit-line/db/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+    environment:
+      - POSTGRES_DB=credit_line_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - aplazo-net
+  credit-line-app:
+    image: 'credit-line-app:latest'
+    build:
+      context: ./credit-line
+      dockerfile: Dockerfile
+    container_name: credit-line-app
+    depends_on:
+      - credit-line-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://credit-line-db:5432/credit_line_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    ports:
+      - "8081:8081"
+    networks:
+      - aplazo-net
 volumes:
   database-data-customer: {}
+  database-data-credit-line: {}
+networks:
+  aplazo-net:

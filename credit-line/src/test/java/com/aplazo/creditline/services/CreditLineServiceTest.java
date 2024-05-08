@@ -1,6 +1,7 @@
 package com.aplazo.creditline.services;
 
 import com.aplazo.creditline.BaseContainer;
+import com.aplazo.creditline.clients.CustomerClient;
 import com.aplazo.creditline.entities.CreditLine;
 import com.aplazo.creditline.repositories.CreditLineRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +17,13 @@ import static org.mockito.Mockito.when;
 public class CreditLineServiceTest extends BaseContainer {
     private CreditLineService creditLineService;
     private CreditLineRepository creditLineRepository;
+    private CustomerClient customerClient;
 
     @BeforeEach
     public void before() {
         creditLineRepository = mock(CreditLineRepository.class);
-        creditLineService = new CreditLineService(creditLineRepository);
+        customerClient = mock(CustomerClient.class);
+        creditLineService = new CreditLineService(creditLineRepository, customerClient);
     }
 
     @Test

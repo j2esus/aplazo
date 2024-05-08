@@ -4,8 +4,8 @@ import com.aplazo.customer.entities.Customer;
 import com.aplazo.customer.services.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/customers")
@@ -14,11 +14,13 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping("/{id}")
-    public Customer findById(@PathVariable Long id) {
-        return customerService.findById(id).orElseThrow( ()->
-            {
-                throw new NoSuchElementException("Customer with ID " + id + " does not exist.");
-            });
+    public ResponseEntity<Customer> findById(@PathVariable Long id) {
+        var customer = customerService.findById(id);
+
+        if (customer.isPresent()) {
+            return new ResponseEntity<>(customer.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

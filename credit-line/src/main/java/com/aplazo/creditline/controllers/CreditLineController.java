@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/credit-line")
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class CreditLineController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CreditLine create(@RequestBody CreditLine creditLine) {
+    public Map<String, String> create(@RequestBody CreditLine creditLine) {
         return creditLineService.save(creditLine);
     }
 }

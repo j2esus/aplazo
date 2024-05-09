@@ -23,7 +23,7 @@ public class CreditLineService {
 
         if(Objects.isNull(customer)) {
             return Map.of("status", "FAILURE", "description",
-                    "Customer with id " + creditLine.getIdCustomer() + "does not exist");
+                    "Customer with id " + creditLine.getIdCustomer() + " does not exist.");
         }
         creditLineRepository.save(creditLine);
 

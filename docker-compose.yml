@@ -64,8 +64,41 @@ services:
       - "8081:8081"
     networks:
       - aplazo-net
+
+  scheme-db:
+    image: postgres:15.2
+    container_name: scheme_db
+    restart: always
+    volumes:
+      - database-data-scheme:/var/lib/postgresql/data/
+      - ./scheme/db/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+    environment:
+      - POSTGRES_DB=scheme_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - aplazo-net
+  scheme-app:
+    image: 'scheme-app:latest'
+    build:
+      context: ./scheme
+      dockerfile: Dockerfile
+    container_name: scheme-app
+    depends_on:
+      - scheme-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://scheme-db:5432/scheme_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    ports:
+      - "8082:8082"
+    networks:
+      - aplazo-net
 volumes:
   database-data-customer: {}
   database-data-credit-line: {}
+  database-data-scheme: {}
 networks:
   aplazo-net:

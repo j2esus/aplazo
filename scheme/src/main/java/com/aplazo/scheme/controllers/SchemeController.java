@@ -1,7 +1,7 @@
 package com.aplazo.scheme.controllers;
 
-import com.aplazo.scheme.dtos.SchemaResponse;
-import com.aplazo.scheme.dtos.SchemeRequest;
+import com.aplazo.scheme.dtos.SchemaResponseDTO;
+import com.aplazo.scheme.dtos.SchemeRequestDTO;
 import com.aplazo.scheme.entities.Scheme;
 import com.aplazo.scheme.services.SchemeService;
 import lombok.AllArgsConstructor;
@@ -19,8 +19,8 @@ public class SchemeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public List<SchemaResponse> paymentsSimulator(@RequestBody SchemeRequest schemeRequest) {
-        return schemeService.paymentsSimulator(schemeRequest);
+    public List<SchemaResponseDTO> create(@RequestBody SchemeRequestDTO schemeRequest) {
+        return schemeService.create(schemeRequest);
     }
 
     @GetMapping("/{id}")

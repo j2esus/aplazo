@@ -1,7 +1,6 @@
 package com.aplazo.scheme.dtos;
 
 import com.aplazo.scheme.entities.Scheme;
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class SchemaResponse {
+public class SchemaResponseDTO {
     private Long id;
     private Long idCustomer;
     private Double subTotal;
@@ -18,9 +17,9 @@ public class SchemaResponse {
     private Boolean isNextPeriod;
     private Double commissionAmount;
     private Double total;
-    private Set<LocalDate> payments = new HashSet<>();
+    private Set<LocalDate> paymentDates = new HashSet<>();
 
-    public SchemaResponse(Scheme scheme) {
+    public SchemaResponseDTO(Scheme scheme) {
         this.id = scheme.getId();
         this.idCustomer = scheme.getIdCustomer();
         this.subTotal = scheme.getSubTotal();
@@ -29,6 +28,5 @@ public class SchemaResponse {
         this.isNextPeriod = scheme.getIsNextPeriod();
         this.commissionAmount = scheme.getCommissionAmount();
         this.total = scheme.getTotal();
-
     }
 }

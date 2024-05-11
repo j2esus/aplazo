@@ -26,6 +26,7 @@ public class SchemeRepositoryTest extends BaseContainer {
         scheme.setRate(10.0);
         scheme.setIdCustomer(100L);
         scheme.setSubTotal(5_000.0);
+        scheme.setIsNextPeriod(false);
 
         var result = schemeRepository.save(scheme);
 
@@ -83,6 +84,7 @@ public class SchemeRepositoryTest extends BaseContainer {
         scheme.setRate(10.0);
         scheme.setIdCustomer(100L);
         scheme.setSubTotal(4_356.154251841);
+        scheme.setIsNextPeriod(false);
 
         schemeRepository.save(scheme);
 
@@ -96,6 +98,7 @@ public class SchemeRepositoryTest extends BaseContainer {
         scheme1.setRate(10.0);
         scheme1.setIdCustomer(100L);
         scheme1.setSubTotal(4_356.154251841);
+        scheme1.setIsNextPeriod(true);
 
         schemeRepository.save(scheme1);
 
@@ -103,6 +106,7 @@ public class SchemeRepositoryTest extends BaseContainer {
         scheme2.setRate(10.0);
         scheme2.setIdCustomer(100L);
         scheme2.setSubTotal(4_356.154251841);
+        scheme2.setIsNextPeriod(false);
 
         schemeRepository.save(scheme2);
 

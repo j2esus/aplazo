@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SchemeRequest {
+public class SchemeRequestDTO {
     private Long idCustomer;
-    private Double mount;
+    private Double amount;
 }

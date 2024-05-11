@@ -30,4 +30,8 @@ public class CreditLineService {
         return Map.of("status", "SUCCESS",
                 "description", "Credit line was created successfully.");
     }
+
+    public Optional<CreditLine> findById(Long id) {
+        return this.creditLineRepository.findById(id);
+    }
 }

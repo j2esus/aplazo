@@ -6,6 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 public class SchemaResponseDTO {
@@ -28,5 +29,8 @@ public class SchemaResponseDTO {
         this.isNextPeriod = scheme.getIsNextPeriod();
         this.commissionAmount = scheme.getCommissionAmount();
         this.total = scheme.getTotal();
+        this.paymentDates = scheme.getPaymentDates()
+                .stream().map(i -> i.getPaymentDate())
+                .collect(Collectors.toSet());
     }
 }

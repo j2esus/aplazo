@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -23,6 +23,11 @@ public class Scheme implements Serializable {
     private Double rate;
     @Column(name = "is_next_period")
     private Boolean isNextPeriod;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_scheme", referencedColumnName = "id", nullable = false)
+    @OrderBy("paymentDate")
+    private Set<PaymentDate> paymentDates = new HashSet<>();
 
     @Transient
     public Double getCommissionAmount() {

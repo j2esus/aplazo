@@ -6,3 +6,10 @@ create table scheme(
     rate numeric(10,2) not null,
     is_next_period boolean not null
 );
+
+create table payment_date(
+    id bigserial primary key,
+    payment_date date not null,
+    id_scheme bigint not null,
+    constraint fk_scheme foreign key(id_scheme) references scheme(id)
+);

@@ -1,11 +1,14 @@
 package com.aplazo.scheme.repositories;
 
 import com.aplazo.scheme.BaseContainer;
+import com.aplazo.scheme.entities.PaymentDate;
 import com.aplazo.scheme.entities.Scheme;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,5 +115,38 @@ public class SchemeRepositoryTest extends BaseContainer {
 
         var result = schemeRepository.findByIdCustomer(100L);
         assertEquals(2, result.size());
+    }
+
+    @Test
+    public void save_schemeWithPayments_schemeSavedWithOnePayment() {
+        var scheme = new Scheme();
+        scheme.setRate(10.0);
+        scheme.setIdCustomer(100L);
+        scheme.setSubTotal(5_000.0);
+        scheme.setIsNextPeriod(false);
+
+        scheme.getPaymentDates().add(new PaymentDate(LocalDate.now()));
+
+        var result = schemeRepository.save(scheme);
+
+        assertNotNull(result.getId());
+        assertEquals(1, result.getPaymentDates().size());
+    }
+
+    @Test
+    public void save_schemeWithPayments_schemeSavedWithTwoPayment() {
+        var scheme = new Scheme();
+        scheme.setRate(10.0);
+        scheme.setIdCustomer(100L);
+        scheme.setSubTotal(5_000.0);
+        scheme.setIsNextPeriod(false);
+
+        scheme.getPaymentDates().add(new PaymentDate(LocalDate.now()));
+        scheme.getPaymentDates().add(new PaymentDate(LocalDate.now().plusDays(1)));
+
+        var result = schemeRepository.save(scheme);
+
+        assertNotNull(result.getId());
+        assertEquals(2, result.getPaymentDates().size());
     }
 }

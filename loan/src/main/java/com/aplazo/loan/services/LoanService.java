@@ -24,6 +24,8 @@ public class LoanService {
         checkIfCustomerExists(schemeRequestDTO.getIdCustomer());
         var scheme = findScheme(schemeRequestDTO.getIdScheme());
 
+        checkIfIfCustomerIsTheSame(scheme, schemeRequestDTO);
+
         var loan = new Loan(scheme, schemeRequestDTO.getAmount());
         loanRepository.save(loan);
 
@@ -50,5 +52,11 @@ public class LoanService {
         }
 
         return scheme;
+    }
+
+    private void checkIfIfCustomerIsTheSame(SchemeResponse scheme, LoanRequestDTO schemeRequestDTO) {
+        if(!scheme.getIdCustomer().equals(schemeRequestDTO.getIdCustomer())) {
+            throw new ErrorStatusException("The customer id doest not equal with customer id from the scheme.");
+        }
     }
 }

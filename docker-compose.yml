@@ -96,9 +96,42 @@ services:
       - "8082:8082"
     networks:
       - aplazo-net
+
+  loan-db:
+    image: postgres:15.2
+    container_name: loan_db
+    restart: always
+    volumes:
+      - database-data-loan:/var/lib/postgresql/data/
+      - ./loan/db/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+    environment:
+      - POSTGRES_DB=loan_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5435:5432"
+    networks:
+      - aplazo-net
+  loan-app:
+    image: 'loan-app:latest'
+    build:
+      context: ./loan
+      dockerfile: Dockerfile
+    container_name: loan-app
+    depends_on:
+      - loan-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://loan-db:5432/loan_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    ports:
+      - "8083:8083"
+    networks:
+      - aplazo-net
 volumes:
   database-data-customer: {}
   database-data-credit-line: {}
   database-data-scheme: {}
+  database-data-loan: {}
 networks:
   aplazo-net:

@@ -4,10 +4,11 @@ create table loan(
     sub_total numeric(10,2) not null,
     installment_amount numeric(10,2),
     rate numeric(10,2) not null,
-    is_next_period boolean not null
+    is_next_period boolean not null,
+    loan_date date not null
 );
 
-create table payments(
+create table payment(
     id bigserial primary key,
     payment_date date not null,
     id_loan bigint not null,

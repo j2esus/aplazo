@@ -1,13 +1,11 @@
 package com.aplazo.creditline.services;
 
 import com.aplazo.creditline.clients.CustomerClient;
-import com.aplazo.creditline.clients.CustomerResponse;
 import com.aplazo.creditline.entities.CreditLine;
+import com.aplazo.creditline.exceptions.ErrorStatusException;
 import com.aplazo.creditline.repositories.CreditLineRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -17,21 +15,24 @@ public class CreditLineService {
     private final CreditLineRepository creditLineRepository;
     private final CustomerClient customerClient;
 
-    public Map<String, String> save(CreditLine creditLine) {
+    public CreditLine save(CreditLine creditLine) {
         creditLine.setId(null);
-        CustomerResponse customer = customerClient.findById(creditLine.getIdCustomer());
 
-        if(Objects.isNull(customer)) {
-            return Map.of("status", "FAILURE", "description",
-                    "Customer with id " + creditLine.getIdCustomer() + " does not exist.");
-        }
-        creditLineRepository.save(creditLine);
+        checkIfCustomerExists(creditLine.getIdCustomer());
 
-        return Map.of("status", "SUCCESS",
-                "description", "Credit line was created successfully.");
+        return creditLineRepository.save(creditLine);
     }
 
-    public Optional<CreditLine> findById(Long id) {
-        return this.creditLineRepository.findById(id);
+    public Optional<CreditLine> findByIdCustomer(Long id) {
+        checkIfCustomerExists(id);
+        return this.creditLineRepository.findByIdCustomer(id);
+    }
+
+    private void checkIfCustomerExists(Long idCustomer) {
+        var customer = customerClient.findById(idCustomer);
+
+        if(Objects.isNull(customer)) {
+            throw new ErrorStatusException("Customer with id " + idCustomer + " does not exist.");
+        }
     }
 }

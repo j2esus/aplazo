@@ -4,6 +4,7 @@ import com.aplazo.creditline.BaseContainer;
 import com.aplazo.creditline.clients.CustomerClient;
 import com.aplazo.creditline.clients.CustomerResponse;
 import com.aplazo.creditline.entities.CreditLine;
+import com.aplazo.creditline.exceptions.ErrorStatusException;
 import com.aplazo.creditline.repositories.CreditLineRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class CreditLineServiceTest extends BaseContainer {
     }
 
     @Test
-    public void save_customerDoesNotExist_errorStatus() {
+    public void save_customerDoesNotExist_exception() {
         when(creditLineRepository.save(any())).thenReturn(new CreditLine(1L, 100L, 50_000.0));
 
         var creditLine = new CreditLine();
@@ -36,13 +37,15 @@ public class CreditLineServiceTest extends BaseContainer {
         creditLine.setIdCustomer(100L);
         creditLine.setAmount(50_000.0);
 
-        var result = creditLineService.save(creditLine);
+        var exception = assertThrows(ErrorStatusException.class, () -> {
+           creditLineService.save(creditLine);
+        });
 
-        assertEquals(result.get("status"), "FAILURE");
+        assertEquals("Customer with id 100 does not exist.", exception.getMessage());
     }
 
     @Test
-    public void save_customerExists_successStatus() {
+    public void save_customerExists_creditLineCreated() {
         when(creditLineRepository.save(any())).thenReturn(new CreditLine(1L, 100L, 50_000.0));
         when(customerClient.findById(any())).thenReturn(new CustomerResponse(100L, "John Wick"));
 
@@ -52,7 +55,7 @@ public class CreditLineServiceTest extends BaseContainer {
 
         var result = creditLineService.save(creditLine);
 
-        assertEquals(result.get("status"), "SUCCESS");
+        assertNotNull(result.getId());
     }
 
 }

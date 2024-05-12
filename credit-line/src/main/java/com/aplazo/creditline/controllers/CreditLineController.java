@@ -17,13 +17,13 @@ public class CreditLineController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Map<String, String> create(@RequestBody CreditLine creditLine) {
+    public CreditLine create(@RequestBody CreditLine creditLine) {
         return creditLineService.save(creditLine);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CreditLine> findById(@PathVariable Long id) {
-        var creditLine = creditLineService.findById(id);
+    @GetMapping("/customer/{id}")
+    public ResponseEntity<CreditLine> findByIdCustomer(@PathVariable Long id) {
+        var creditLine = creditLineService.findByIdCustomer(id);
         return creditLine.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }

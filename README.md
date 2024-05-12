@@ -18,7 +18,7 @@ According to the requirements showed above. I determinate the following apis:
 2. CreditLine API
    - POST create
      - This operation uses findById of Customer API to make sure the customer really exists.
-   - GET findById
+   - GET findByIdCustomer
 3. Scheme API
    - GET check
      - This operation uses findById of Customer API to make sure the customer really exists.
@@ -26,14 +26,23 @@ According to the requirements showed above. I determinate the following apis:
    - GET findById
 4. Loans API
     - POST create
+      - This operation uses findById of Customer API to make sure the customer really exists.
+      - This operation uses as well the findById from Scheme API to make sure the scheme really exists, because from the scheme we know how many payments we need to generate.
     - GET loans
       - All these operations uses findById of Customers API to make sure the customer really exists.
-5. Payments API
-   - POST processPayments
-   - GET paymentsPerLoan
+    - POST processPayments
 
 ### Technical Requirements
 - Java 17
 - Docker with enough permissions to run.
 - Maven 3
-- Postman for manual tests of the API's (optional)
+- Postman for manual tests of the API's (optional). 
+  - At the root of this project there is a xml file of a collection of POSTMAN to check all endpoints of this project.
+
+### Considerations
+1. Only for local environments
+2. In some microservices we don't have api test, mainly when open feign clients are used.
+3. The passwords are visible in the code, that's not so good.
+4. Possible problems with decimal in the payments. Because for every payment I divide the total_amount/total_payments, so this could come with more decimals, I mean the sum of the amount of all payments will be major than the amount total of the loan.
+
+### How to run the project?

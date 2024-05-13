@@ -19,4 +19,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     @Modifying
     @Query("UPDATE Payment p SET p.status = ?1 WHERE p.id = ?2 ")
     int updatePaymentStatus(PaymentStatus status, Long id);
+
+    @Query("select p from Loan l join l.payments p where l.idCustomer <= ?1 and p.status in ( ?2 )")
+    List<Payment> findPayments(Long idCustomer, List<PaymentStatus> status);
 }

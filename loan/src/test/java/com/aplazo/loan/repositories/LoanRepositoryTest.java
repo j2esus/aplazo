@@ -294,4 +294,35 @@ public class LoanRepositoryTest extends BaseContainer {
 
         assertEquals(1, result);
     }
+
+    @Test
+    public void findPaymentsByCustomer_twoPaymentsByOneUser_listWithTwoElement() {
+        var loan = new Loan();
+        loan.setLoanDate(LocalDate.now());
+        loan.setIdCustomer(100L);
+        loan.setRate(10D);
+        loan.setSubTotal(2_000D);
+        loan.setIsNextPeriod(false);
+        loan.setInstallmentAmount(0D);
+
+        var payment = new Payment();
+        payment.setAmount(1_000D);
+        payment.setStatus(PaymentStatus.GENERATED);
+        payment.setPaymentDate(LocalDate.now());
+
+        var payment2 = new Payment();
+        payment2.setAmount(1_000D);
+        payment2.setStatus(PaymentStatus.FAILED);
+        payment2.setPaymentDate(LocalDate.now().plusDays(15));
+
+        loan.getPayments().add(payment);
+        loan.getPayments().add(payment2);
+
+        this.loanRepository.save(loan);
+
+        List<Payment> paymentList = loanRepository.findPayments(100L,
+                List.of(PaymentStatus.GENERATED, PaymentStatus.FAILED));
+
+        assertEquals(2, paymentList.size());
+    }
 }

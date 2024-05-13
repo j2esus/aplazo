@@ -1,10 +1,7 @@
 package com.aplazo.loan.services;
 
 import com.aplazo.loan.BaseContainer;
-import com.aplazo.loan.clients.CustomerClient;
-import com.aplazo.loan.clients.CustomerResponse;
-import com.aplazo.loan.clients.SchemeClient;
-import com.aplazo.loan.clients.SchemeResponse;
+import com.aplazo.loan.clients.*;
 import com.aplazo.loan.dtos.LoanRequestDTO;
 import com.aplazo.loan.entities.Loan;
 import com.aplazo.loan.exceptions.ErrorStatusException;
@@ -24,13 +21,15 @@ public class LoanServiceTest extends BaseContainer {
     private LoanRepository loanRepository;
     private CustomerClient customerClient;
     private SchemeClient schemeClient;
+    private CreditLineClient creditLineClient;
 
     @BeforeEach
     public void before() {
         loanRepository = mock(LoanRepository.class);
         customerClient = mock(CustomerClient.class);
         schemeClient = mock(SchemeClient.class);
-        schemeService = new LoanService(loanRepository, customerClient, schemeClient);
+        creditLineClient = mock(CreditLineClient.class);
+        schemeService = new LoanService(loanRepository, customerClient, schemeClient, creditLineClient);
     }
 
     @Test

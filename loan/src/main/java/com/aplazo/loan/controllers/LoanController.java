@@ -34,4 +34,9 @@ public class LoanController {
     public void processPayments() {
         paymentSchedule.processPaymentsAsync();
     }
+
+    @GetMapping("/available-credit/customer/{id}")
+    public Double getAvailableCredit(@PathVariable Long id) {
+        return loanService.availableCredit(id);
+    }
 }

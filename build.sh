@@ -21,6 +21,6 @@ echo "compiling scheme project..."
 cd scheme
 mvn clean compile
 mvn package -DskipTests
-cd..
+cd ..
 
 echo "Build complete."

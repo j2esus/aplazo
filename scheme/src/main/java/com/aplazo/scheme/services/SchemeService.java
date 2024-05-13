@@ -1,6 +1,7 @@
 package com.aplazo.scheme.services;
 
 import com.aplazo.scheme.clients.CustomerClient;
+import com.aplazo.scheme.clients.LoanClient;
 import com.aplazo.scheme.dtos.SchemaResponseDTO;
 import com.aplazo.scheme.dtos.SchemeRequestDTO;
 import com.aplazo.scheme.entities.PaymentDate;
@@ -21,6 +22,7 @@ import java.util.*;
 public class SchemeService {
     private final SchemeRepository schemeRepository;
     private final CustomerClient customerClient;
+    private final LoanClient loanClient;
 
     @Transactional
     public List<SchemaResponseDTO> create(SchemeRequestDTO schemeRequestDTO) {
@@ -30,7 +32,7 @@ public class SchemeService {
 
         // TODO check is the user is approved for the loan.
         //  1. Only 5 loans in progress in the last 30 days
-        //  2. only if the credit line is enough for the new loan
+        checkIfCreditIsEnough(schemeRequestDTO.getIdCustomer(), schemeRequestDTO.getAmount());
 
         Arrays.stream(SchemeDefault.values())
                 .forEach( schemeDefault -> {
@@ -82,5 +84,17 @@ public class SchemeService {
         }
 
         return paymentDates;
+    }
+
+    private void checkIfCreditIsEnough(Long idCustomer, Double amount) {
+        var availableCredit = this.loanClient.findById(idCustomer);
+
+        if(Objects.isNull(availableCredit)) {
+            throw new ErrorStatusException("There was a problem getting the credit of the customer.");
+        }
+
+        if(amount > availableCredit) {
+            throw new ErrorStatusException("The credit of the customer is not enough for this loan.");
+        }
     }
 }

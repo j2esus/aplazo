@@ -2,6 +2,7 @@ package com.aplazo.scheme.services;
 
 import com.aplazo.scheme.BaseContainer;
 import com.aplazo.scheme.clients.CustomerClient;
+import com.aplazo.scheme.clients.LoanClient;
 import com.aplazo.scheme.dtos.SchemeRequestDTO;
 import com.aplazo.scheme.entities.Scheme;
 import com.aplazo.scheme.exceptions.ErrorStatusException;
@@ -20,12 +21,14 @@ public class SchemeServiceTest extends BaseContainer {
     private SchemeService schemeService;
     private SchemeRepository schemeRepository;
     private CustomerClient customerClient;
+    private LoanClient loanClient;
 
     @BeforeEach
     public void before() {
         schemeRepository = mock(SchemeRepository.class);
         customerClient = mock(CustomerClient.class);
-        schemeService = new SchemeService(schemeRepository, customerClient);
+        loanClient = mock(LoanClient.class);
+        schemeService = new SchemeService(schemeRepository, customerClient, loanClient);
     }
 
     @Test

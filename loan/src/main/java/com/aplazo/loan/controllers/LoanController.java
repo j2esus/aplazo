@@ -3,10 +3,10 @@ package com.aplazo.loan.controllers;
 import com.aplazo.loan.dtos.LoanResponseDTO;
 import com.aplazo.loan.dtos.LoanRequestDTO;
 import com.aplazo.loan.entities.Loan;
+import com.aplazo.loan.schedules.PaymentSchedule;
 import com.aplazo.loan.services.LoanService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class LoanController {
     private final LoanService loanService;
+    private final PaymentSchedule paymentSchedule;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -26,5 +27,11 @@ public class LoanController {
     @GetMapping("/customer/{id}")
     public List<Loan> findById(@PathVariable Long id) {
         return loanService.findByIdCustomer(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/processPayments")
+    public void processPayments() {
+        paymentSchedule.processPaymentsAsync();
     }
 }

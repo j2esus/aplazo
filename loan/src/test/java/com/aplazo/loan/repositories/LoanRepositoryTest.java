@@ -8,8 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -149,5 +151,147 @@ public class LoanRepositoryTest extends BaseContainer {
 
         assertNotNull(result.getId());
         assertEquals(2, result.getPayments().size());
+    }
+
+    @Test
+    public void findPayments_onlyOnePayment_listWithOneElement() {
+        var loan = new Loan();
+        loan.setLoanDate(LocalDate.now());
+        loan.setIdCustomer(100L);
+        loan.setRate(10D);
+        loan.setSubTotal(1_000D);
+        loan.setIsNextPeriod(false);
+        loan.setInstallmentAmount(0D);
+
+        var payment = new Payment();
+        payment.setAmount(1_000D);
+        payment.setStatus(PaymentStatus.GENERATED);
+        payment.setPaymentDate(LocalDate.now());
+
+        loan.getPayments().add(payment);
+
+        this.loanRepository.save(loan);
+
+        List<Payment> paymentList = loanRepository.findPayments(LocalDate.now(), List.of(PaymentStatus.GENERATED));
+
+        assertEquals(1, paymentList.size());
+    }
+
+    @Test
+    public void findPayments_twoPaymentsOneWithStatusNotAllowed_listWithOneElement() {
+        var loan = new Loan();
+        loan.setLoanDate(LocalDate.now());
+        loan.setIdCustomer(100L);
+        loan.setRate(10D);
+        loan.setSubTotal(2_000D);
+        loan.setIsNextPeriod(false);
+        loan.setInstallmentAmount(0D);
+
+        var payment = new Payment();
+        payment.setAmount(1_000D);
+        payment.setStatus(PaymentStatus.GENERATED);
+        payment.setPaymentDate(LocalDate.now());
+
+        var payment2 = new Payment();
+        payment2.setAmount(1_000D);
+        payment2.setStatus(PaymentStatus.PROCESSED);
+        payment2.setPaymentDate(LocalDate.now());
+
+        loan.getPayments().add(payment);
+        loan.getPayments().add(payment2);
+
+        this.loanRepository.save(loan);
+
+        List<Payment> paymentList = loanRepository.findPayments(LocalDate.now(),
+                List.of(PaymentStatus.GENERATED));
+
+        assertEquals(1, paymentList.size());
+    }
+
+    @Test
+    public void findPayments_twoPaymentsOneWithTwoStatusAllowed_listWithTwoElement() {
+        var loan = new Loan();
+        loan.setLoanDate(LocalDate.now());
+        loan.setIdCustomer(100L);
+        loan.setRate(10D);
+        loan.setSubTotal(2_000D);
+        loan.setIsNextPeriod(false);
+        loan.setInstallmentAmount(0D);
+
+        var payment = new Payment();
+        payment.setAmount(1_000D);
+        payment.setStatus(PaymentStatus.GENERATED);
+        payment.setPaymentDate(LocalDate.now());
+
+        var payment2 = new Payment();
+        payment2.setAmount(1_000D);
+        payment2.setStatus(PaymentStatus.FAILED);
+        payment2.setPaymentDate(LocalDate.now());
+
+        loan.getPayments().add(payment);
+        loan.getPayments().add(payment2);
+
+        this.loanRepository.save(loan);
+
+        List<Payment> paymentList = loanRepository.findPayments(LocalDate.now(),
+                List.of(PaymentStatus.GENERATED, PaymentStatus.FAILED));
+
+        assertEquals(2, paymentList.size());
+    }
+
+    @Test
+    public void findPayments_twoPaymentsOneWithDateInTheFuture_listWithOneElement() {
+        var loan = new Loan();
+        loan.setLoanDate(LocalDate.now());
+        loan.setIdCustomer(100L);
+        loan.setRate(10D);
+        loan.setSubTotal(2_000D);
+        loan.setIsNextPeriod(false);
+        loan.setInstallmentAmount(0D);
+
+        var payment = new Payment();
+        payment.setAmount(1_000D);
+        payment.setStatus(PaymentStatus.GENERATED);
+        payment.setPaymentDate(LocalDate.now());
+
+        var payment2 = new Payment();
+        payment2.setAmount(1_000D);
+        payment2.setStatus(PaymentStatus.GENERATED);
+        payment2.setPaymentDate(LocalDate.now().plusDays(1));
+
+        loan.getPayments().add(payment);
+        loan.getPayments().add(payment2);
+
+        this.loanRepository.save(loan);
+
+        List<Payment> paymentList = loanRepository.findPayments(LocalDate.now(),
+                List.of(PaymentStatus.GENERATED));
+
+        assertEquals(1, paymentList.size());
+    }
+
+    @Test
+    @Transactional
+    public void updatePaymentStatus_paymentWithNewStatus_recordsAffected() {
+        var loan = new Loan();
+        loan.setLoanDate(LocalDate.now());
+        loan.setIdCustomer(100L);
+        loan.setRate(10D);
+        loan.setSubTotal(2_000D);
+        loan.setIsNextPeriod(false);
+        loan.setInstallmentAmount(0D);
+
+        var payment = new Payment();
+        payment.setAmount(1_000D);
+        payment.setStatus(PaymentStatus.GENERATED);
+        payment.setPaymentDate(LocalDate.now());
+
+        loan.getPayments().add(payment);
+
+        this.loanRepository.save(loan);
+
+        var result = loanRepository.updatePaymentStatus(PaymentStatus.PROCESSED, payment.getId());
+
+        assertEquals(1, result);
     }
 }

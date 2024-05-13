@@ -15,10 +15,11 @@ public class CreditLineService {
     private final CreditLineRepository creditLineRepository;
     private final CustomerClient customerClient;
 
-    public CreditLine save(CreditLine creditLine) {
+    public CreditLine create(CreditLine creditLine) {
         creditLine.setId(null);
 
         checkIfCustomerExists(creditLine.getIdCustomer());
+        checkIfCreditLineExists(creditLine.getIdCustomer());
 
         return creditLineRepository.save(creditLine);
     }
@@ -33,6 +34,14 @@ public class CreditLineService {
 
         if(Objects.isNull(customer)) {
             throw new ErrorStatusException("Customer with id " + idCustomer + " does not exist.");
+        }
+    }
+
+    private void checkIfCreditLineExists(Long idCustomer) {
+        var creditLineOptional = findByIdCustomer(idCustomer);
+
+        if( creditLineOptional.isPresent()) {
+            throw new ErrorStatusException("The Customer with id " + idCustomer + " already has a credit line.");
         }
     }
 }

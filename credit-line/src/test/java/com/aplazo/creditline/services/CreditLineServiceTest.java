@@ -29,7 +29,7 @@ public class CreditLineServiceTest extends BaseContainer {
     }
 
     @Test
-    public void save_customerDoesNotExist_exception() {
+    public void create_customerDoesNotExist_exception() {
         when(creditLineRepository.save(any())).thenReturn(new CreditLine(1L, 100L, 50_000.0));
 
         var creditLine = new CreditLine();
@@ -38,14 +38,14 @@ public class CreditLineServiceTest extends BaseContainer {
         creditLine.setAmount(50_000.0);
 
         var exception = assertThrows(ErrorStatusException.class, () -> {
-           creditLineService.save(creditLine);
+           creditLineService.create(creditLine);
         });
 
         assertEquals("Customer with id 100 does not exist.", exception.getMessage());
     }
 
     @Test
-    public void save_customerExists_creditLineCreated() {
+    public void create_customerExists_creditLineCreated() {
         when(creditLineRepository.save(any())).thenReturn(new CreditLine(1L, 100L, 50_000.0));
         when(customerClient.findById(any())).thenReturn(new CustomerResponse(100L, "John Wick"));
 
@@ -53,7 +53,7 @@ public class CreditLineServiceTest extends BaseContainer {
         creditLine.setIdCustomer(100L);
         creditLine.setAmount(50_000.0);
 
-        var result = creditLineService.save(creditLine);
+        var result = creditLineService.create(creditLine);
 
         assertNotNull(result.getId());
     }

@@ -18,7 +18,7 @@ public class CreditLineController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public CreditLine create(@RequestBody CreditLine creditLine) {
-        return creditLineService.save(creditLine);
+        return creditLineService.create(creditLine);
     }
 
     @GetMapping("/customer/{id}")

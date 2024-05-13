@@ -37,12 +37,18 @@ According to the requirements showed above. I determinate the following apis:
 - Docker with enough permissions to run.
 - Maven 3
 - Postman for manual tests of the API's (optional). 
-  - At the root of this project there is a xml file of a collection of POSTMAN to check all endpoints of this project.
+  - At the root of this project there is a xml file of a collection of POSTMAN to check all endpoints of this project. The name of that file is AplazoInterview.postman_collection.json
 
 ### Considerations
 1. Only for local environments
 2. In some microservices we don't have api test, mainly when open feign clients are used.
 3. The passwords are visible in the code, that's not so good.
 4. Possible problems with decimal in the payments. Because for every payment I divide the total_amount/total_payments, so this could come with more decimals, I mean the sum of the amount of all payments will be major than the amount total of the loan.
+5. I was not able to include all restrictions on the creation of the schemes, but I leave comments TODO
+6. I don't create enough unit tests as I would like.
+7. I don't implement Caching.
+8. I don't implement Log functionality.
 
 ### How to run the project?
+1. Execute build.sh file, it is in the root of the project.
+2. Run docker compose: docker compose up

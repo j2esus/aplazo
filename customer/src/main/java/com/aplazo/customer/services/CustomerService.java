@@ -3,6 +3,7 @@ package com.aplazo.customer.services;
 import com.aplazo.customer.entities.Customer;
 import com.aplazo.customer.repositories.CustomerRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
+    @Cacheable("findCustomerById")
     public Optional<Customer> findById(Long id) {
         return customerRepository.findById(id);
     }

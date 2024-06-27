@@ -32,6 +32,8 @@ services:
       - "8080:8080"
     networks:
       - aplazo-net
+    links:
+      - redis
 
   credit-line-db:
     image: postgres:15.2
@@ -126,6 +128,13 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
     ports:
       - "8083:8083"
+    networks:
+      - aplazo-net
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
     networks:
       - aplazo-net
 volumes:
